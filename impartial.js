@@ -50,6 +50,8 @@ class Nim extends Game
 		//UI
 		this.tBody=document.getElementById("bodyNim");
 		createEmptyTable(this.tBody, maxValue(this.heaps), this.heaps.length);
+		this.selCol = -1;
+		this.selBeans = 0;//the number of beans selected in a column
 		//add
 		this.beanCount=document.getElementById("addNimBeans");
 		this.addButton=document.getElementById("addNimSubmit");
@@ -82,6 +84,7 @@ class Nim extends Game
 	draw(){
 		clearTable(this.tBody);
 		drawHeaps(this.tBody, this.heaps, this);
+		addNimEvents(this.tBody, this);
 	}
 	addHeap(beans)
 	{
@@ -94,6 +97,10 @@ class Nim extends Game
 		this.heaps = [];
 		createEmptyTable(this.tBody, maxValue(this.heaps), this.heaps.length);
 		this.draw();
+	}
+	deselect()
+	{
+		changeSelection(this.tBody, -1, 0, this);
 	}
 }
 class Chess extends Game
@@ -768,26 +775,29 @@ function addSelectInput()
 	h: an int array with each int representing size of heap
 */
 function drawHeaps(tBody, h, gameObj){
-	for(let i=0; i<h.length; i++)
+	for(let i=0; i<h.length; i++) //iterate through each column of the table
 	{
-		drawHeap(tBody, h[i], i, gameObj);
+		drawHeap(tBody, h[i], i, gameObj); //draws a heap in one column of the table
 	}
 }
-function drawHeap(tBody, size, ind, gameObj)
+function drawHeap(tBody, size, col, gameObj)
 {
 	for(let i=0; i < size; i++)
 	{
-		// row, column, div
 		let row = tBody.children.length - i - 1;
 		let heapSize = i;
-		let div = tBody.children[row].children[ind].children[0];
-		div.className = "bean"; //set class of div to block
-		let column = ind;
-		div.addEventListener("click", function(){
-			handlePlayerTurn(function(){
-				gameObj.heaps[column] = heapSize;
-			});
-		});
+		let div = tBody.children[row].children[col].children[0]; //this div is one of the beans in a heap
+		//set class of div
+		if(i >= size-gameObj.selBeans && col == gameObj.selCol) //if selected
+		{
+			div.className = "selBean"; 
+		}
+		else
+		{
+			div.className = "bean"; 
+		}
+		let column = col;
+		
 	}
 }
 function createEmptyTable(tBody, rows, columns)
@@ -804,12 +814,43 @@ function createEmptyTable(tBody, rows, columns)
 		for(let j=0; j<columns; j++)
 		{
 			let data = document.createElement("td");
-			data.appendChild(createSquare("empty")); //add empty block
+			let div = createSquare("empty");
+			data.appendChild(div); //add empty block
 			row.appendChild(data); //add data to row
 		}
 		//append row to body
 		tBody.appendChild(row);
 	}
+}
+function addNimEvents(tBody, gameObj)
+{
+	for(let row=0;row<tBody.children.length; row++) //iterate through each row 
+	{
+		for(let col=0; col<tBody.children[row].children.length; col++) //iterate through each column of the table
+		{
+			let heapSize = tBody.children.length-row-1; //the new heap size after removing beans
+			let selected = gameObj.heaps[col] - heapSize; //the number of beans selected in the heap to be removed from the heap
+			let div = tBody.children[row].children[col];
+			div.addEventListener("click", function(){
+				if(heapSize < gameObj.heaps[col]){
+					handlePlayerTurn(function(){
+						gameObj.heaps[col] = heapSize;
+					});
+				}
+			});
+			div.addEventListener("mouseover", function(){
+				changeSelection(tBody, col, selected, gameObj);
+			});
+		}
+	}
+}
+function changeSelection(tBody, newSel, newBeans, gameObj)
+{
+	let preSel = gameObj.selCol;
+	gameObj.selCol = newSel;
+	gameObj.selBeans = newBeans;
+	drawHeap(tBody, gameObj.heaps[preSel], preSel, gameObj); //deselect the old heap
+	drawHeap(tBody, gameObj.heaps[newSel], newSel, gameObj); //select the new heap
 }
 function clearTable(tBody)
 {
@@ -836,6 +877,7 @@ function createSquare(squareClass)
 {
 	let div = document.createElement("div"); //create div
 	div.className = squareClass; //set class of div
+	
 	return div;
 }
 
