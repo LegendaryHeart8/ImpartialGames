@@ -1,0 +1,6 @@
+Chess symbols set
+------------------
+Description: Chess et by Igo Krizanovskij. From old OCAL site.
+License: Public domain
+From: https://freesvg.org/anonymous-chess-symbols-set
+

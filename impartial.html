@@ -1,0 +1,110 @@
+<html>
+	<head>
+		<title> Impartial games </title>
+		<script src="impartial.js"> </script>
+		<style>
+			body{
+				background-color: white;
+			}
+			h1{
+				color: black;
+			}
+			#divNim{
+				width:971px;
+				height:600px;
+				background-color: azure;
+				position: relative;
+			}
+			#tableNim{
+				width:100%;
+				height: 100%;
+			}
+			#tableNimContainer{
+				margin:auto;
+				width:50%;
+				height:50%;
+				position: absolute;
+				bottom:0px;
+				left: 0; 
+				right: 0; 
+				margin-left: auto; 
+				margin-right: auto; 
+			}
+			.bean{
+				background-color: green;
+				width:100%;
+				height:100%;
+			}
+			.empty{
+				background-color: inherit;
+				width:100%;
+				height:100%;
+			}
+			aside {
+				float: right;
+				width: 30%;
+				position: relative;
+			}
+			#asideCont{
+				padding-left: 15px;
+				margin-left: 15px;
+				background-color: lightgray;
+				position: fixed;
+				width: 100%;
+			}
+			.gameView{
+				border-color: black;
+				border-style: solid;
+				margin: 10px;
+			}
+			#addChessY{
+				margin-right:55px;
+			}
+			input{
+				width: 50;
+			}
+		</style>
+	</head>
+	<body onload="pageload()">
+		<aside>
+			<div id="asideCont">
+				<h2>Game Information:</h2>
+				<div  id="turnShow"> 
+					<p style = "color: green;">Player's turn</p>
+					<p style = "color: red;">AI turn</p>
+				</div>
+				<hr/>
+				<h2>Control</h2>
+				<button style="display: block;" onclick="clearGames()">Clear Games</button>
+				<hr/>
+				<h2>Add To Games:</h2>
+				<select id="addSelection" oninput="addSelectInput()">
+				</select>
+				<div id="addGames">
+					<div id="addNim">
+						<span>Number of beans:</span> <input type="number" id="addNimBeans" min="0" value="1">
+						<button style="display: block" id="addNimSubmit">Add heap</button>
+					</div>
+					<div id="addChess">
+						<span>Figure:</span> <select id="addChessFigure"></select>
+						
+						<span>Position: </span> <input type="number" id="addChessX" min="0" value = "0"> <span>, </span> <input type="number" id="addChessY" min="0" value="0">
+						<button style="display: block;" id="addChessSubmit">Add piece</button>
+					</div>
+				</div>
+				<hr/>
+			</div>
+		</aside>
+		<section>
+			<div id= "divNim" class="gameView">
+				<div id="tableNimContainer">
+					<table id="tableNim" >
+						<tbody id="bodyNim">
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<canvas id="canvasChess" class="gameView" width="800px" height="800px">
+		</section>
+	</body>
+</html>
